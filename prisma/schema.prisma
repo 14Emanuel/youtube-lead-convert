@@ -1,86 +1,93 @@
+// Datasource configuration to connect to a MongoDB database
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider     = "mongodb"           // Database provider
+  url          = env("DATABASE_URL")  // Database connection URL from environment variable
+  relationMode = "prisma"             // Relation mode for Prisma
 }
 
+// Generator configuration for Prisma Client
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js"       // Client provider for generating Prisma Client
 }
 
+// LeadMagnet model definition
 model LeadMagnet {
-  id                     String    @id @default(uuid())
-  userId                 String
-  name                   String
-  status                 String
-  slug                   String?
-  publishedTitle         String    @db.Text
-  draftTitle             String    @db.Text
-  publishedSubtitle      String    @db.Text
-  draftSubtitle          String    @db.Text
-  publishedPrompt        String    @db.Text
-  draftPrompt            String    @db.Text
-  publishedBody          String    @db.Text
-  draftBody              String    @db.Text
-  publishedFirstQuestion String    @db.Text
-  draftFirstQuestion     String    @db.Text
-  publishedEmailCapture  String    @db.Text
-  draftEmailCapture      String    @db.Text
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @default(now())
-  publishedAt            DateTime? @db.DateTime
-  pageViews              Int       @default(0)
-  leads                  Lead[]
+  id                     String    @id @default(uuid())  // Unique identifier
+  userId                 String                             // ID of the user who created the lead magnet
+  name                   String                             // Name of the lead magnet
+  status                 String                             // Status of the lead magnet
+  slug                   String?                            // Optional slug for the lead magnet
+  publishedTitle         String    @db.Text                 // Published title of the lead magnet
+  draftTitle             String    @db.Text                 // Draft title of the lead magnet
+  publishedSubtitle      String    @db.Text                 // Published subtitle of the lead magnet
+  draftSubtitle          String    @db.Text                 // Draft subtitle of the lead magnet
+  publishedPrompt        String    @db.Text                 // Published prompt of the lead magnet
+  draftPrompt            String    @db.Text                 // Draft prompt of the lead magnet
+  publishedBody          String    @db.Text                 // Published body of the lead magnet
+  draftBody              String    @db.Text                 // Draft body of the lead magnet
+  publishedFirstQuestion String    @db.Text                 // Published first question of the lead magnet
+  draftFirstQuestion     String    @db.Text                 // Draft first question of the lead magnet
+  publishedEmailCapture  String    @db.Text                 // Published email capture of the lead magnet
+  draftEmailCapture      String    @db.Text                 // Draft email capture of the lead magnet
+  createdAt              DateTime  @default(now())          // Creation timestamp
+  updatedAt              DateTime  @default(now())          // Update timestamp
+  publishedAt            DateTime? @db.DateTime             // Optional published timestamp
+  pageViews              Int       @default(0)              // Number of page views
+  leads                  Lead[]                            // Leads associated with the lead magnet
 
-  @@unique([userId, slug])
+  @@unique([userId, slug])                                  // Unique constraint on userId and slug
 }
 
+// Lead model definition
 model Lead {
-  id           String     @id @default(uuid())
-  userId       String
-  leadMagnetId String
-  name         String
-  email        String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now())
-  LeadMagnet   LeadMagnet @relation(fields: [leadMagnetId], references: [id], onDelete: Cascade)
+  id           String     @id @default(uuid())  // Unique identifier
+  userId       String                             // ID of the user who created the lead
+  leadMagnetId String                             // ID of the associated lead magnet
+  name         String                             // Name of the lead
+  email        String                             // Email of the lead
+  createdAt    DateTime   @default(now())          // Creation timestamp
+  updatedAt    DateTime   @default(now())          // Update timestamp
+  LeadMagnet   LeadMagnet @relation(fields: [leadMagnetId], references: [id], onDelete: Cascade) // Relation to LeadMagnet model
 
-  @@index([leadMagnetId])
-  @@index([userId])
+  @@index([leadMagnetId])                          // Index on leadMagnetId
+  @@index([userId])                                // Index on userId
 }
 
+// Profile model definition
 model Profile {
-  id              String   @id @default(uuid())
-  userId          String   @unique
-  title           String
-  description     String   @db.Text
-  profileImageUrl String   @db.Text
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
+  id              String   @id @default(uuid())  // Unique identifier
+  userId          String   @unique                // Unique user ID
+  title           String                          // Title of the profile
+  description     String   @db.Text               // Description of the profile
+  profileImageUrl String   @db.Text               // Profile image URL
+  createdAt       DateTime @default(now())        // Creation timestamp
+  updatedAt       DateTime @default(now())        // Update timestamp
 
-  @@index([userId])
+  @@index([userId])                              // Index on userId
 }
 
+// Account model definition
 model Account {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  email     String   @unique
-  username  String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id        String   @id @default(uuid())  // Unique identifier
+  userId    String   @unique                // Unique user ID
+  email     String   @unique                // Unique email address
+  username  String   @unique                // Unique username
+  createdAt DateTime @default(now())        // Creation timestamp
+  updatedAt DateTime @default(now())        // Update timestamp
 
-  @@index([userId])
-  @@index([username])
+  @@index([userId])                        // Index on userId
+  @@index([username])                      // Index on username
 }
 
+// Subscription model definition
 model Subscription {
-  id                     String    @id @default(cuid())
-  userId                 String    @unique
-  stripeCustomerId       String?   @unique
-  stripeSubscriptionId   String?   @unique
-  stripeCurrentPeriodEnd DateTime?
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @default(now())
+  id                     String    @id @default(cuid())  // Unique identifier
+  userId                 String    @unique                // Unique user ID
+  stripeCustomerId       String?   @unique                // Optional unique Stripe customer ID
+  stripeSubscriptionId   String?   @unique                // Optional unique Stripe subscription ID
+  stripeCurrentPeriodEnd DateTime?                        // Optional Stripe current period end timestamp
+  createdAt              DateTime  @default(now())        // Creation timestamp
+  updatedAt              DateTime  @default(now())        // Update timestamp
 
-  @@index([userId])
+  @@index([userId])                                      // Index on userId
 }

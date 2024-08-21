@@ -34,8 +34,8 @@ async function AccountPage() {
       }
 
       // Print account details and type for debugging
-      console.log("Account details:", account);
-      console.log("Account type:", typeof account);
+      //console.log("Account details:", account);
+      //console.log("Account type:", typeof account);
 
       return account;
     } catch (error) {
@@ -66,8 +66,8 @@ async function AccountPage() {
   const subscription = mockSubscription;
 
   // Print combined data for debugging
-  console.log("Fetched account:", account);
-  console.log("Mocked subscription:", subscription);
+  //console.log("Fetched account:", account);
+  //console.log("Mocked subscription:", subscription);
 
   // Render the AccountContainer with the fetched data
   return <AccountContainer account={account} subscription={subscription} />;

@@ -9,7 +9,7 @@ function LandingPageFooter() {
           href="mailto:brandon@brandonhancock.io"
           className="text-purple-500 hover:underline"
         >
-          brandon@brandonhancock.io
+          emanuelokoth8@gmail.com
         </a>
       </span>
     </div>
